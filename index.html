@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sattvik Tripathy — Product Engineer</title>
+<meta name="description" content="Product engineer. I build LLM features, voice systems and web apps into products that already have users, and I spend most of my attention on what happens when they're confidently wrong.">
+<meta property="og:title" content="Sattvik Tripathy — Product Engineer">
+<meta property="og:description" content="Most bugs don't throw. Work on LLM features, Twilio voice, and Postgres, told through the failure modes.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23151E27'/><text y='.9em' x='50%25' text-anchor='middle' font-size='68' fill='%23B45309' font-family='monospace'>!</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9EAE4; --ink:#151E27; --slate:#5D6C77;
+  --pass:#2F6E57; --flag:#B45309; --rule:#C8C9C0; --sunk:#DEDFD8;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --gut:clamp(1.25rem,5vw,4.5rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  font-size:clamp(1rem,.95rem + .25vw,1.0625rem); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--flag); outline-offset:3px}
+.wrap{max-width:74rem;margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- readout: the signature device ---------- */
+.readout{font-family:var(--mono);font-size:.8125rem;line-height:1.5;border:1px solid var(--rule);background:var(--sunk)}
+.readout .row{display:flex;justify-content:space-between;gap:1.5rem;padding:.5rem .75rem;border-bottom:1px solid var(--rule)}
+.readout .row:last-child{border-bottom:0}
+.readout .k{color:var(--slate)}
+.readout .v{white-space:nowrap;font-weight:500}
+.readout .pass .v{color:var(--pass)}
+.readout .flag{background:rgba(180,83,9,.07)}
+.readout .flag .v{color:var(--flag)}
+.readout .flag .k{color:var(--flag);opacity:.8}
+
+/* ---------- masthead ---------- */
+.top{border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;padding-top:1.1rem;padding-bottom:1.1rem}
+.mark{font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.015em}
+.meta{font-family:var(--mono);font-size:.75rem;color:var(--slate);letter-spacing:.02em}
+.top nav{margin-left:auto;display:flex;gap:1.1rem;font-family:var(--mono);font-size:.75rem}
+.top nav a{text-decoration:none;color:var(--slate);border-bottom:1px solid transparent;padding-bottom:2px}
+.top nav a:hover{color:var(--ink);border-bottom-color:var(--flag)}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(3.5rem,9vw,7rem) 0 clamp(3rem,7vw,5.5rem)}
+.hero h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(2.9rem,11vw,7.5rem);line-height:.92;letter-spacing:-.035em;
+  max-width:14ch;
+}
+.hero .lede{margin-top:1.75rem;max-width:46ch;font-size:clamp(1.05rem,1rem + .4vw,1.2rem);color:#2B3742}
+.hero .cols{display:grid;grid-template-columns:1fr;gap:2.5rem;align-items:end}
+@media(min-width:56rem){.hero .cols{grid-template-columns:1.35fr .95fr;gap:3.5rem}}
+.caption{font-family:var(--mono);font-size:.78rem;color:var(--slate);margin-top:.7rem;line-height:1.5}
+
+/* the one animated moment */
+.reveal{opacity:0;transform:translateY(4px)}
+.go .reveal{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
+.go .d1{transition-delay:.55s}.go .d2{transition-delay:1.15s}.go .d3{transition-delay:1.5s}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none}
+  .go .reveal{transition:none}
+}
+
+/* ---------- sections ---------- */
+section{padding:clamp(3rem,7vw,5.5rem) 0;border-top:1px solid var(--rule)}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--slate);margin-bottom:2.25rem;display:flex;gap:.9rem;align-items:center}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+.work{display:grid;gap:0}
+.item{display:grid;grid-template-columns:1fr;gap:1.4rem;padding:2.25rem 0;border-bottom:1px solid var(--rule)}
+.item:first-child{padding-top:0}
+@media(min-width:56rem){.item{grid-template-columns:1fr 21rem;gap:3.5rem;align-items:start}}
+.item h3{font-family:var(--display);font-weight:700;font-size:clamp(1.35rem,1.2rem + .8vw,1.85rem);letter-spacing:-.02em;line-height:1.15}
+.tag{font-family:var(--mono);font-size:.72rem;color:var(--slate);margin-top:.35rem}
+.item p{margin-top:.85rem;max-width:60ch;color:#28323C}
+.stack{font-family:var(--mono);font-size:.72rem;color:var(--slate);margin-top:.9rem;line-height:1.7}
+.item .live{display:inline-block;margin-top:.9rem;font-family:var(--mono);font-size:.75rem;text-decoration:none;border-bottom:1px solid var(--flag);padding-bottom:1px}
+.item .live:hover{color:var(--flag)}
+
+.also{display:grid;gap:1.5rem;margin-top:.5rem}
+@media(min-width:44rem){.also{grid-template-columns:repeat(3,1fr);gap:2.25rem}}
+.also h4{font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.01em}
+.also p{margin-top:.4rem;font-size:.9375rem;color:#28323C}
+.also .stack{margin-top:.5rem}
+
+.essay{display:block;text-decoration:none;border:1px solid var(--rule);padding:1.75rem;background:var(--sunk)}
+.essay:hover{border-color:var(--flag)}
+.essay h3{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,1.15rem + .8vw,1.7rem);letter-spacing:-.02em;max-width:24ch}
+.essay p{margin-top:.7rem;max-width:58ch;color:#28323C}
+.essay .live{display:inline-block;margin-top:1rem;font-family:var(--mono);font-size:.75rem;border-bottom:1px solid var(--flag);padding-bottom:1px}
+
+.contact{display:grid;gap:2rem}
+@media(min-width:56rem){.contact{grid-template-columns:1fr 21rem;gap:3.5rem;align-items:start}}
+.contact h2{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,1.6rem + 2vw,3rem);letter-spacing:-.03em;line-height:1.05;max-width:16ch}
+.contact p{margin-top:1rem;max-width:48ch}
+.links{font-family:var(--mono);font-size:.85rem;display:grid;gap:.55rem}
+.links a{text-decoration:none;display:flex;justify-content:space-between;gap:1.5rem;border-bottom:1px solid var(--rule);padding:.55rem 0}
+.links a:hover{border-bottom-color:var(--flag)}
+.links .lbl{color:var(--slate)}
+.links a:hover .lbl{color:var(--flag)}
+
+footer{border-top:1px solid var(--rule);padding:1.75rem 0 3rem;font-family:var(--mono);font-size:.72rem;color:var(--slate)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="mark">Sattvik Tripathy</span>
+    <span class="meta">Product engineer · Ahmedabad, India · remote</span>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#writing">Writing</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero wrap">
+  <div class="cols">
+    <div>
+      <h1>Most bugs don't throw.</h1>
+      <p class="lede">I build LLM features, voice systems and web apps into products that already have users. Most of my attention goes on what happens when they're confidently wrong.</p>
+    </div>
+    <div>
+      <div class="readout">
+        <div class="row pass reveal d1"><span class="k">import complete</span><span class="v">✓ 1,000 rows</span></div>
+        <div class="row flag reveal d2"><span class="k">file on disk</span><span class="v">4,812 rows</span></div>
+      </div>
+      <p class="caption reveal d3">PostgREST caps a response at 1,000 rows by default.<br>Nothing errored. The importer just quietly stopped.</p>
+    </div>
+  </div>
+</div>
+
+<section id="work" class="wrap">
+  <p class="eyebrow">Selected work</p>
+  <div class="work">
+
+    <article class="item">
+      <div>
+        <h3>Real estate CRM</h3>
+        <p class="tag">Client build · Terra Estates</p>
+        <p>A solo agent's whole pipeline: drag-and-drop kanban, contact history, and a bulk importer that takes whatever spreadsheet the agent already has. Column mapping is manual because every export is shaped differently, and dedupe runs on phone number rather than name, since the same buyer is spelled three ways across two files.</p>
+        <p class="stack">99 TypeScript modules · Next.js 16 · React 19 · Supabase · Postgres</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">rows imported</span><span class="v">✓ 1,000</span></div>
+          <div class="row flag"><span class="k">rows in file</span><span class="v">4,812</span></div>
+        </div>
+        <p class="caption">Found the PostgREST default, paginated past it.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div>
+        <h3>iOS resume builder</h3>
+        <p class="tag">Own project · Swift, SwiftUI</p>
+        <p>Replaced a prototype paywall with StoreKit 2 purchases, mirrored into Supabase as the single source of truth for entitlements. The app verifies Apple's signed receipt itself, walking the x5c certificate chain and checking the ES256 signature, rather than believing what the device says about itself. Security pass after: key out of source, tokens into the Keychain, RLS audited on the billing tables.</p>
+        <p class="stack">Swift · SwiftUI · StoreKit 2 · Supabase · JWS / x5c / ES256</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">client payload</span><span class="v">✓ verified: true</span></div>
+          <div class="row flag"><span class="k">signature checked</span><span class="v">not by anyone</span></div>
+        </div>
+        <p class="caption">A client can claim anything. Verify the receipt.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div>
+        <h3>Chargeback dispute analyst</h3>
+        <p class="tag">Multi-tenant e-commerce platform</p>
+        <p>An OpenAI-backed analyst that reads a dispute against the merchant's own refund policy, judges whether it's winnable, and drafts the rebuttal. It's constrained so it can't assert anything outside the evidence packet, parses defensively, and degrades soft: if the model is unreachable, evidence assembly still finishes without it. The output is advisory. It never gates an automatic submission, because a wrong call there costs the merchant real money.</p>
+        <p class="stack">OpenAI API · PHP / Yii2 · MySQL · unit tested</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">model response</span><span class="v">✓ 200 OK</span></div>
+          <div class="row flag"><span class="k">grounded in evidence</span><span class="v">unchecked</span></div>
+        </div>
+        <p class="caption">A fluent answer and a correct one look identical.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div>
+        <h3>Voice agent for returns</h3>
+        <p class="tag">Own project</p>
+        <p>When a customer raises a return, the agent places the first call, holds the conversation, captures why, and hands a staff member a one-click approve. The design constraint was the whole point: the AI never moves money. It gathers and recommends, a person decides, and the refund path stays behind that decision.</p>
+        <p class="stack">Anthropic API · Twilio Voice · Fastify · Prisma · AWS S3</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">refund recommended</span><span class="v">✓ by agent</span></div>
+          <div class="row flag"><span class="k">refund issued</span><span class="v">by a human</span></div>
+        </div>
+        <p class="caption">Anything that spends money keeps a person in it.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div>
+        <h3>Telephony module</h3>
+        <p class="tag">Multi-tenant e-commerce platform</p>
+        <p>Outbound and inbound calling built end to end: conferencing, per-agent identities, hold, transfer, three-way, an IVR builder, and call transcription. Every seller brings their own Twilio credentials, so nothing is shared and no two tenants are configured the same way. Webhook resolution is proxy-aware because the callback has to find its way back through whatever sits in front of the app.</p>
+        <p class="stack">Twilio Voice · IVR · transcription · per-tenant credentials</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">works locally</span><span class="v">✓ webhook hit</span></div>
+          <div class="row flag"><span class="k">behind a proxy</span><span class="v">wrong host</span></div>
+        </div>
+        <p class="caption">Every tenant's environment is a different environment.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div>
+        <h3>Browser PDF editor</h3>
+        <p class="tag">Own project</p>
+        <p>Click any text in a PDF and edit it in place. Extraction pulls each span with its bounding box and font metadata, then maps PDF coordinates onto the canvas so the caret lands where you clicked. Scanned files have no text layer at all, so those fall through to OCR instead of failing.</p>
+        <p class="stack">Python · PyMuPDF · Tesseract OCR · canvas coordinate mapping</p>
+      </div>
+      <div>
+        <div class="readout">
+          <div class="row pass"><span class="k">text extracted</span><span class="v">✓ 0 spans</span></div>
+          <div class="row flag"><span class="k">page is</span><span class="v">a scan</span></div>
+        </div>
+        <p class="caption">Empty is not the same as broken. Fall through to OCR.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="wrap">
+  <p class="eyebrow">Also shipped</p>
+  <div class="also">
+    <div>
+      <h4>Filter standardisation</h4>
+      <p>Designed one reusable filterFields API and migrated 73 screens onto it over three phases. About 21,000 net lines of duplicated frontend code went away. Reviewing a filter change became reading one API instead of 73 versions of it.</p>
+      <p class="stack">React 18 · TypeScript</p>
+    </div>
+    <div>
+      <h4>AI recruitment tool</h4>
+      <p>Client build. Turns a job description into a brief and boolean search strings, then bulk-scores sourced CVs into a ranked list with gaps and interview probes. Nothing is stored server-side. The model sits behind a swappable provider layer.</p>
+      <p class="stack">Next.js 16 · React 19 · Tailwind v4 · Gemini</p>
+    </div>
+    <div>
+      <h4>Therapy practice site</h4>
+      <p>Client build, live. Eight responsive pages, a booking widget, transactional email, SEO and OG images, deployed continuously.</p>
+      <p class="stack">Next.js 15 · TypeScript · Tailwind · Resend · Vercel</p>
+    </div>
+  </div>
+</section>
+
+<section id="writing" class="wrap">
+  <p class="eyebrow">Writing</p>
+  <a class="essay" href="https://sattviktripathy.github.io/agent-blast-radius/">
+    <h3>What a coding agent can break when you give it write access</h3>
+    <p>Agents are now a normal part of a codebase, and most of the discussion is about what they can build. This is about the other side: the blast radius when one is confidently wrong, and which guardrails actually contain it.</p>
+    <span class="live">Read it →</span>
+  </a>
+</section>
+
+<section id="contact" class="wrap">
+  <div class="contact">
+    <div>
+      <h2>Open to work.</h2>
+      <p>I'm looking for product or full-stack engineering work, remote. If you've got something that already has users and a part of it keeps surprising you, that's the kind of thing I like.</p>
+    </div>
+    <div class="links">
+      <a href="mailto:sattviktripathyy@gmail.com"><span class="lbl">email</span><span>sattviktripathyy@gmail.com</span></a>
+      <a href="https://github.com/sattviktripathy"><span class="lbl">github</span><span>sattviktripathy</span></a>
+      <a href="https://linkedin.com/in/sattvik-tripathy"><span class="lbl">linkedin</span><span>sattvik-tripathy</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">Ahmedabad, India · available remote</footer>
+
+<script>
+  requestAnimationFrame(function(){ document.body.classList.add('go'); });
+</script>
+</body>
+</html>
