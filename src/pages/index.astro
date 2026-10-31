@@ -1,0 +1,357 @@
+---
+import { Image, getImage } from 'astro:assets';
+import '@fontsource-variable/darker-grotesque/wght.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '../styles/global.css';
+import { links, posepal, truspace, crm, seller7, leads, call, more, roles, brief } from '../data/work.js';
+import plan from '../data/plan.json';
+import viewfinder from '../assets/viewfinder.jpg';
+import ghost from '../assets/ghost.webp';
+import icon from '../assets/posepal-icon.png';
+import homeThumb from '../assets/home-thumb.webp';
+import halftone from '../assets/halftone.png';
+import display from '@fontsource-variable/darker-grotesque/files/darker-grotesque-latin-wght-normal.woff2?url';
+
+const title = 'Sattvik Tripathy, AI product engineer';
+const description = 'I build AI products people use. PosePal, 90,000+ users, built alone. TruSpace turns floor plans into 3D homes. Open to contract and full-time work, remote.';
+const person = {
+  '@context': 'https://schema.org', '@type': 'Person', name: 'Sattvik Tripathy',
+  jobTitle: 'AI Product Engineer', email: `mailto:${links.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Ahmedabad', addressCountry: 'IN' },
+  sameAs: [links.github, links.linkedin],
+};
+
+const sentence = [
+  { text: 'I build AI products people use.' },
+  { href: '#posepal', thumb: 'icon', name: 'PosePal,', text: `${posepal.users} users, built alone.` },
+  { href: '#truspace', thumb: 'home', name: 'TruSpace,', text: 'floor plans into 3D homes.' },
+  { href: '#seller7', thumb: 'wave', name: 'Calls and AI', text: 'for Amazon sellers.' },
+];
+let word = 0;
+const w = (s) => s.split(' ').map((t) => ({ t, i: word++ }));
+
+// The plan is drawn in metres. It is the render's frame 0 rotated 180 degrees, so this
+// mapping lands every wall on the frame underneath it (scripts/render-dollhouse.mjs).
+const span = 14.2;
+const P = ([x, y]) => [+(10.8 - x).toFixed(3), +(8.4 - y).toFixed(3)];
+const viewBox = `${5.4 - span / 2} ${4.2 - span / 2} ${span} ${span}`;
+const line = (a, b) => `M${P(a).join(' ')}L${P(b).join(' ')}`;
+const wallPaths = [];
+const openingPaths = [];
+for (const wall of plan.walls) {
+  const [ax, ay] = wall.start;
+  const [bx, by] = wall.end;
+  const len = Math.hypot(bx - ax, by - ay);
+  const u = [(bx - ax) / len, (by - ay) / len];
+  const at = (d) => [ax + u[0] * d, ay + u[1] * d];
+  let cursor = 0;
+  const openings = plan.openings.filter((o) => o.wall === wall.id).sort((a, b) => a.offset - b.offset);
+  for (const o of openings) {
+    if (o.offset > cursor) wallPaths.push({ d: line(at(cursor), at(o.offset)), w: wall.thickness });
+    const a = at(o.offset);
+    const b = at(o.offset + o.width);
+    if (o.type === 'door') {
+      // The leaf swings into the room nearest the middle of the home.
+      let n = [-u[1], u[0]];
+      if ((5.4 - a[0]) * n[0] + (4.2 - a[1]) * n[1] < 0) n = [-n[0], -n[1]];
+      const tip = [a[0] + n[0] * o.width, a[1] + n[1] * o.width];
+      const [tx, ty] = P(tip);
+      const [ex, ey] = P(b);
+      const cross = (tip[0] - a[0]) * (b[1] - a[1]) - (tip[1] - a[1]) * (b[0] - a[0]);
+      openingPaths.push(`${line(a, tip)}M${tx} ${ty}A${o.width} ${o.width} 0 0 ${cross > 0 ? 0 : 1} ${ex} ${ey}`);
+    } else {
+      openingPaths.push(line(a, b));
+    }
+    cursor = o.offset + o.width;
+  }
+  if (cursor < len) wallPaths.push({ d: line(at(cursor), at(len)), w: wall.thickness });
+}
+const area = (pts) => Math.abs(pts.reduce((s, [x, y], i) => {
+  const [nx, ny] = pts[(i + 1) % pts.length];
+  return s + x * ny - nx * y;
+}, 0)) / 2;
+const roomLabels = plan.rooms.map((r) => {
+  const [x, y] = P([
+    r.polygon.reduce((s, p) => s + p[0], 0) / r.polygon.length,
+    r.polygon.reduce((s, p) => s + p[1], 0) / r.polygon.length,
+  ]);
+  return { x, y, name: r.label === 'bathroom' ? 'bath' : r.label, area: area(r.polygon).toFixed(1) };
+});
+
+const finalFrame = '/seq/lg/71.webp';
+const iconSmall = await getImage({ src: icon, width: 144, format: 'webp' });
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1A2FD0" />
+    <link rel="canonical" href={Astro.site.href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL('/og.jpg', Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231A2FD0'/><circle cx='16' cy='16' r='8' fill='%23FFD21F'/></svg>" />
+    <link rel="preload" as="font" type="font/woff2" href={display} crossorigin />
+    <script is:inline>
+      // Sticky stages need room, so short screens get the plain page. Rotating a phone flips this live.
+      const stages = matchMedia('(min-height: 500px) and (prefers-reduced-motion: no-preference)');
+      const setMotion = () => document.documentElement.classList.toggle('motion', stages.matches);
+      setMotion();
+      stages.addEventListener('change', setMotion);
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to the work</a>
+
+    <nav class="dock" aria-label="Get in touch">
+      <a class="dock-go" href="#close">Tell me what you're building</a>
+      <a class="dock-cv" href={links.resume}>Resume</a>
+    </nav>
+
+    <main id="main">
+      <header id="top" class="hero" data-c="hero">
+        <p class="mark">Sattvik Tripathy</p>
+        <h1>
+          {sentence.map((s) => (
+            <span class="h-line">
+              {s.href && (
+                <a href={s.href}>
+                  <span class="bind">
+                    {s.thumb === 'icon' && <span class="w"><i style={`--i:${word++}`}><img class="thumb thumb-icon" src={iconSmall.src} width="72" height="72" alt="" /></i></span>}
+                    {s.thumb === 'home' && <span class="w"><i style={`--i:${word++}`}><Image class="thumb thumb-home" src={homeThumb} alt="" /></i></span>}
+                    {s.thumb === 'wave' && (
+                      <span class="w"><i style={`--i:${word++}`}>
+                        <svg class="thumb thumb-wave" viewBox="0 0 44 32" aria-hidden="true">
+                          {[10, 22, 14, 30, 18, 26, 8, 16].map((h, n) => <rect x={1 + n * 6} y={16 - h / 2} width="3.4" height={h} rx="1.7" />)}
+                        </svg>
+                      </i></span>
+                    )}
+                    {w(s.name.split(' ')[0]).map(({ t, i }) => <span class="w"><i style={`--i:${i}`}>{t}</i></span>)}
+                  </span>{' '}
+                  {s.name.includes(' ') && w(s.name.slice(s.name.indexOf(' ') + 1)).map(({ t, i }) => <><span class="w"><i style={`--i:${i}`}>{t}</i></span>{' '}</>)}
+                </a>
+              )}
+              {' '}
+              {w(s.text).map(({ t, i }) => <><span class="w"><i style={`--i:${i}`}>{t}</i></span>{' '}</>)}
+            </span>
+          ))}
+        </h1>
+        <div class="hero-foot">
+          <p>AI product engineer in Ahmedabad. Open to contract and full-time work, remote, anywhere.</p>
+          <a class="btn btn-sun" href="#close">Tell me what you're building</a>
+        </div>
+      </header>
+
+      <section id="posepal" class="ch" data-c="posepal" aria-labelledby="posepal-title">
+        <div class="stage p-stage">
+          <div class="pin p-pin">
+            <div class="p-side">
+              <h2 id="posepal-title">PosePal</h2>
+              <p class="lede">Line him up with the ghost, then take the shot.</p>
+            </div>
+            <div class="cam">
+              <div class="cam-bar">
+                <span class="cam-name"><img src={iconSmall.src} width="24" height="24" alt="" />PosePal</span>
+                <span class="cam-tools" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M13 2 5 14h6l-1 8 9-13h-6z" /></svg>
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6" /></svg>
+                  <svg viewBox="0 0 24 24"><path d="M9 3v18M15 3v18M3 9h18M3 15h18" /></svg>
+                </span>
+              </div>
+              <div class="cam-view">
+                <div class="cam-frame">
+                  <Image class="cam-photo" src={viewfinder} widths={[420, 700, 1018]} sizes="(min-width: 900px) 380px, 100vw" alt="Through the PosePal camera: a man at a garden party, drink in hand, with a pose card beside him." loading="lazy" />
+                  <Image class="ghost" src={ghost} widths={[300]} sizes="60vw" alt="" loading="lazy" />
+                </div>
+                <p class="cue"><span id="cue-text">hold it there</span><span id="cue-step">3/3</span></p>
+              </div>
+              <div class="cam-foot">
+                <button id="shutter" class="shutter" type="button" aria-label="Take the photo"></button>
+                <p class="modes" aria-hidden="true"><span class="on">pose me</span><span>normal</span><span>guide me</span></p>
+              </div>
+              <div class="flash" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <div class="after">
+          <p class="big"><strong>{posepal.users} users.</strong> PosePal is an iPhone camera that shows you how to stand. I built it alone, from the first Swift file to App Store approval.</p>
+          <div class="after-side">
+            <p>{posepal.poses} pose guides, {posepal.looks} film looks and {posepal.tools} cloud AI tools for retouching, relighting and removing objects, with subscriptions through StoreKit 2.</p>
+            <p class="scar"><b>What went wrong.</b> App Review rejected version 1.1 under guideline {posepal.rejection} for making people sign in. I built guest accounts, sign-in became optional, and it went live on 25 September.</p>
+            <a class="badge" href={links.appStore}><img src="/app-store-badge.svg" width="150" height="50" alt="Download PosePal on the App Store" loading="lazy" /></a>
+            <a class="ask" href="#close" data-need="ios">Need an app on the App Store?</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="truspace" class="ch" data-c="truspace" aria-labelledby="truspace-title">
+        <div class="stage t-stage">
+          <div class="pin t-pin">
+            <div class="t-head">
+              <h2 id="truspace-title">Floor plan in. Furnished home out.</h2>
+              <p class="t-name">TruSpace</p>
+            </div>
+            <figure class="board">
+              <svg class="plan" viewBox={viewBox} role="img" aria-label="Floor plan of the demo home: kitchen, dining, living room, two bedrooms and two bathrooms, 10.8 by 8.4 metres.">
+                <g class="walls">{wallPaths.map((p) => <path d={p.d} stroke-width={p.w} pathLength="1" />)}</g>
+                <g class="openings">{openingPaths.map((d) => <path d={d} pathLength="1" />)}</g>
+                <g class="dims">
+                  <path d="M0 -.8H10.8M0 -1V-.6M10.8 -1V-.6" />
+                  <text x="5.4" y="-1.05" text-anchor="middle">10.8 m</text>
+                  <path d="M11.6 0V8.4M11.4 0H11.8M11.4 8.4H11.8" />
+                  <text x="11.85" y="4.3" text-anchor="start" class="side">8.4 m</text>
+                </g>
+                <g class="labels">
+                  {roomLabels.map((r) => (
+                    <text x={r.x} y={r.y}>
+                      <tspan x={r.x} text-anchor="middle">{r.name}</tspan>
+                      <tspan x={r.x} dy=".42" text-anchor="middle" class="m2">{r.area} m²</tspan>
+                    </text>
+                  ))}
+                </g>
+              </svg>
+              <img class="t-final" src={finalFrame} width="1000" height="1000" alt="The same home in 3D: walls raised, every room furnished, seen from above with the roof off." loading="lazy" />
+              <canvas class="t-seq" width="700" height="700" aria-hidden="true"></canvas>
+            </figure>
+          </div>
+        </div>
+        <div class="after">
+          <p class="big">A builder sends the plan they already have. A buyer opens the finished home from a link on their phone, with no app and no login.</p>
+          <div class="after-side">
+            <p>Furniture is placed by rules taken from NKBA, ADA and ASID standards. Across hundreds of generated rooms it scored {truspace.conformance} on those standards, with nothing through a wall.</p>
+            <p>The frames you just scrolled through are the real demo home, rendered from the file the live site ships.</p>
+            <a class="btn" href={links.truspaceDemo}>Walk through the demo home</a>
+            <a class="ask" href="#close" data-need="ai">Got a hard problem like this?</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="crm" class="ch" data-c="crm" aria-labelledby="crm-title">
+        <div class="stage c-stage">
+          <div class="pin c-pin">
+            <h2 id="crm-title">Most bugs don't throw.</h2>
+            <div class="tally" id="tally">
+              <div class="t-shown"><span>On screen</span><b id="shown">{crm.total.toLocaleString('en-US')}</b></div>
+              <div class="t-true"><span>In the database</span><b>{crm.total.toLocaleString('en-US')}</b></div>
+            </div>
+            <div class="sheet" aria-hidden="true">
+              <div class="sheet-head"><span>Name</span><span>Phone</span><span>Budget</span><span>Stage</span></div>
+              <div class="sheet-rows">
+                {[...leads, ...leads, ...leads].map((row) => <div class="row">{row.map((c) => <span>{c}</span>)}</div>)}
+              </div>
+            </div>
+            <p class="verdict" id="verdict">Every read now walks past the cap. All {crm.total.toLocaleString('en-US')} leads are there.</p>
+          </div>
+        </div>
+        <div class="after">
+          <p class="big">Real estate CRM for Terra Estates. Nothing errored. The screen showed {crm.capped.toLocaleString('en-US')} of {crm.total.toLocaleString('en-US')} leads, and the backup export quietly dropped the rest.</p>
+          <div class="after-side">
+            <p>One solo agent's whole pipeline: a kanban board, contact history, and an importer that takes whatever spreadsheet the agent already has. Dedupe runs on phone number, because the same buyer gets spelled three ways across two files.</p>
+            <a class="ask" href="#close" data-need="web">Need a product built from zero?</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="seller7" class="ch" data-c="seller7" aria-labelledby="seller7-title">
+        <div class="s-main">
+        <div class="after s-top">
+          <h2 id="seller7-title">The AI never moves the money.</h2>
+          <p class="lede">Seller7 is a platform that Amazon, Target Plus and Wayfair sellers run on. My voice agent calls the customer first, then a person decides.</p>
+        </div>
+        <div class="phonecall">
+          <p class="sample">A sample call, made up for this page</p>
+          <ol class="call" id="call">
+            {call.map(([who, line]) => <li class={who === 'Agent' ? 'agent' : 'them'}><b>{who}</b>{line}</li>)}
+          </ol>
+          <div class="decide" id="decide">
+            <p>Stopped heating after two weeks. Worked at first. Agent recommends a refund of $48.</p>
+            <button id="approve" class="btn btn-ink" type="button">Approve refund</button>
+            <p id="approved" class="approved" role="status"></p>
+          </div>
+        </div>
+        </div>
+        <div class="s-list">
+          <div>
+            <h3>Calls, end to end</h3>
+            <p>Conferencing, per-agent identities, hold, transfer, three-way, an IVR builder and transcription on Twilio. Every seller brings their own credentials, so a new merchant works without a code change.</p>
+          </div>
+          <div>
+            <h3>A dispute analyst that can't make things up</h3>
+            <p>It weighs a chargeback against the merchant's own refund policy and drafts the rebuttal. It can't assert anything outside the evidence packet, and if the model goes down, the evidence still gets assembled.</p>
+          </div>
+          <div>
+            <h3>{seller7.screens} screens, one API</h3>
+            <p>One filter API replaced {seller7.screens} copies of the same code. <span class="lines"><b data-count={seller7.lines}>{seller7.lines.toLocaleString('en-US')}</b> lines gone.</span></p>
+          </div>
+          <a class="ask" href="#close" data-need="ai">Need AI inside a product with real users?</a>
+        </div>
+      </section>
+
+      <section id="more" class="ch" data-c="more" aria-labelledby="more-title">
+        <div class="after m-wrap">
+          <h2 id="more-title">Also built</h2>
+          <ul class="more">
+            {more.map((m) => (
+              <li>
+                {m.url ? <a href={m.url}><h3>{m.name}</h3></a> : <h3>{m.name}</h3>}
+                <p class="kind">{m.kind}</p>
+                <p>{m.line}</p>
+              </li>
+            ))}
+          </ul>
+          <a class="essay" href={links.essay}>
+            <span>I wrote about this too</span>
+            <b>What a coding agent can break when you give it write access</b>
+          </a>
+        </div>
+      </section>
+
+      <section id="about" class="ch" data-c="more" aria-label="About Sattvik">
+        <div class="after a-wrap">
+          <Image class="face" src={halftone} widths={[300, 500]} sizes="(min-width: 900px) 320px, 60vw" alt="Portrait of Sattvik Tripathy, printed as a blue halftone." loading="lazy" />
+          <div>
+            <p class="big">Hi, I'm Sattvik. I care most about what happens when software is confidently wrong.</p>
+            <ol class="roles">
+              {roles.map(([place, role]) => <li><b>{place}</b>{role}</li>)}
+            </ol>
+            <p class="elsewhere"><a href={links.github}>GitHub</a><a href={links.linkedin}>LinkedIn</a><a href={links.resume}>Resume</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="close" class="ch close" data-c="hero" aria-labelledby="close-title">
+        <h2 id="close-title">What are you building?</h2>
+        <form id="brief" class="brief">
+          <fieldset>
+            <legend>I'm</legend>
+            {brief.who.map(([value, label], i) => (
+              <label class="chip"><input type="radio" name="who" value={value} checked={i === 0} /><span>{label}</span></label>
+            ))}
+          </fieldset>
+          <fieldset>
+            <legend>and I need</legend>
+            {brief.need.map(([value, label, id], i) => (
+              <label class="chip"><input type="radio" name="need" value={value} data-id={id} checked={i === 0} /><span>{label}</span></label>
+            ))}
+          </fieldset>
+        </form>
+        <div class="send">
+          <a id="send-mail" class="btn btn-sun" href={`mailto:${links.email}`}>Send it by email</a>
+          <a id="send-wa" class="btn btn-ghost" href={`https://wa.me/${links.phone}`}>Send it on WhatsApp</a>
+        </div>
+        <p class="plain"><span id="address">{links.email}</span> <button id="copy" class="copy" type="button">Copy</button></p>
+        <p class="foot">Ahmedabad, India. Working remotely with anyone, anywhere.</p>
+      </section>
+    </main>
+
+    <script>
+      import '../scripts/motion.js';
+    </script>
+  </body>
+</html>
