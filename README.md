@@ -11,4 +11,4 @@ pnpm check:contrast
 
 Every public claim lives in `src/data/work.js`, with where it was checked. `scripts/render-dollhouse.mjs` and `scripts/assets.mjs` are one-off generators for `public/seq/` and `src/assets/`, and their outputs are committed.
 
-The resume PDF comes from `~/Jobs/resume`. Its URL has to stay `/Sattvik_Tripathy_Resume.pdf`, because job applications link to it.
+The resume PDF comes from `~/Jobs/resume`. Nothing on the page links to it, but its URL has to stay `/Sattvik_Tripathy_Resume.pdf` because job applications do.

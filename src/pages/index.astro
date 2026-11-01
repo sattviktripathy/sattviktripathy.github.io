@@ -111,7 +111,6 @@ const iconSmall = await getImage({ src: icon, width: 144, format: 'webp' });
 
     <nav class="dock" aria-label="Get in touch">
       <a class="dock-go" href="#close">Tell me what you're building</a>
-      <a class="dock-cv" href={links.resume}>Resume</a>
     </nav>
 
     <main id="main">
@@ -320,7 +319,7 @@ const iconSmall = await getImage({ src: icon, width: 144, format: 'webp' });
             <ol class="roles">
               {roles.map(([place, role]) => <li><b>{place}</b>{role}</li>)}
             </ol>
-            <p class="elsewhere"><a href={links.github}>GitHub</a><a href={links.linkedin}>LinkedIn</a><a href={links.resume}>Resume</a></p>
+            <p class="elsewhere"><a href={links.github}>GitHub</a><a href={links.linkedin}>LinkedIn</a></p>
           </div>
         </div>
       </section>

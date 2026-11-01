@@ -88,7 +88,7 @@ h3 { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800; line-height: 1; }
 /* Dock: flush to the bottom edge on a phone, like an app's tab bar. */
 .dock {
   position: fixed; inset: auto 0 0; z-index: 50;
-  display: grid; grid-template-columns: 1fr auto;
+  display: grid;
   transition: transform .3s var(--ease);
 }
 .dock.away { transform: translateY(100%); }
@@ -100,7 +100,6 @@ h3 { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800; line-height: 1; }
   text-decoration: none;
 }
 .dock-go { background: #000; color: #fff; }
-.dock-cv { background: #fff; color: #000; box-shadow: inset 0 0 0 1px #000; }
 
 /* Hero */
 .hero {
@@ -324,10 +323,7 @@ legend { width: 100%; margin-bottom: .45rem; font-size: 1.6rem; font-weight: 700
 
 @media (min-width: 900px) {
   :root { --gutter: 5vw; }
-  .dock {
-    inset: 1.1rem var(--gutter) auto auto;
-    grid-template-columns: auto auto;
-  }
+  .dock { inset: 1.1rem var(--gutter) auto auto; }
   .dock.away { transform: translateY(-300%); }
   .dock a { min-height: 2.75rem; padding: .25rem 1rem .4rem; font-size: 1.25rem; }
   .hero { padding-bottom: 2rem; }

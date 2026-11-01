@@ -6,7 +6,6 @@ export const links = {
   phone: '917041109967', // resume header
   github: 'https://github.com/sattviktripathy',
   linkedin: 'https://linkedin.com/in/sattvik-tripathy',
-  resume: '/Sattvik_Tripathy_Resume.pdf',
   appStore: 'https://apps.apple.com/app/id6793224184', // iTunes lookup, 31 Oct 2026, seller Sattvik Tripathy
   truspace: 'https://truspace3d.com',
   truspaceDemo: 'https://truspace3d.com/view/?plan=refdemo',
